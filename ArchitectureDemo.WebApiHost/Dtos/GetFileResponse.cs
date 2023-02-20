@@ -1,13 +1,12 @@
-namespace ArchitectureDemo.WebApiHost.Dtos
-{
-    public class GetFileResponse
-    {
-        public enum Tag
-        {
-            UserNotFound,
-            FileNotFound
-        }
+namespace ArchitectureDemo.WebApiHost.Dtos;
 
-        public Tag ResponseTag { get; set; }
+public class GetFileResponse
+{
+    public enum Tag
+    {
+        UserNotFound,
+        FileNotFound
     }
+
+    public Tag ResponseTag { get; set; }
 }

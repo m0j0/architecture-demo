@@ -1,7 +1,6 @@
-namespace ArchitectureDemo.WebApiHost.Dtos
+namespace ArchitectureDemo.WebApiHost.Dtos;
+
+public class GetUserResponse
 {
-    public class GetUserResponse
-    {
-        public UserDto? User { get; set; }
-    }
+    public UserDto? User { get; set; }
 }

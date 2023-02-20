@@ -1,15 +1,14 @@
-namespace ArchitectureDemo.WebApiHost.Dtos
+namespace ArchitectureDemo.WebApiHost.Dtos;
+
+public class CreateUserResponse
 {
-    public class CreateUserResponse
+    public enum Tag
     {
-        public enum Tag
-        {
-            UserCreated,
-            EmailAlreadyRegistered
-        }
-
-        public Tag ResponseTag { get; set; }
-
-        public Guid UserId { get; set; }
+        UserCreated,
+        EmailAlreadyRegistered
     }
+
+    public Tag ResponseTag { get; set; }
+
+    public Guid UserId { get; set; }
 }

@@ -1,11 +1,6 @@
-using ArchitectureDemo.DAL;
-using ArchitectureDemo.DAL.Entities;
-using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Json;
-using ArchitectureDemo.WebApiHost;
 using ArchitectureDemo.WebApiHost.Dtos;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit.Abstractions;
 
 namespace ArchitectureDemo.IntegrationTests;

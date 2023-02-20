@@ -1,16 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
-using ArchitectureDemo.DAL;
-using ArchitectureDemo.DAL.Entities;
 using ArchitectureDemo.WebApiHost.Dtos;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
 
 namespace ArchitectureDemo.IntegrationTests;

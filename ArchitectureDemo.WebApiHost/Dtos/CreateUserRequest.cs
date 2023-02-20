@@ -1,9 +1,8 @@
-namespace ArchitectureDemo.WebApiHost.Dtos
-{
-    public class CreateUserRequest
-    {
-        public string Name { get; set; } = null!;
+namespace ArchitectureDemo.WebApiHost.Dtos;
 
-        public Guid? ParentId { get; set; }
-    }
+public class CreateUserRequest
+{
+    public string Name { get; set; } = null!;
+
+    public Guid? ParentId { get; set; }
 }

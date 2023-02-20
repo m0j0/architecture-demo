@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace ArchitectureDemo.WebApiHost.Dtos;
 
 public class UploadFileResponse
