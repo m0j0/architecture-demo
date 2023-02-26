@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 using Xunit.Abstractions;
 
@@ -25,7 +25,7 @@ public class UserTests : IClassFixture<TestContext>
         await InitializeDb(httpClient);
 
         //
-        var usersResponse = await httpClient.GetFromJsonAsync<WebApiHost.Dtos.GetAllUsersResponse>("api/users/getAll");
+        var usersResponse = await httpClient.GetFromJsonAsync<GetAllUsersResponse>("api/users/getAll");
 
         //
         var users = usersResponse!.Users.ToArray();
@@ -42,7 +42,7 @@ public class UserTests : IClassFixture<TestContext>
         await InitializeDb(httpClient);
 
         //
-        var usersResponse = await httpClient.GetFromJsonAsync<WebApiHost.Dtos.GetUsersTreeResponse>("api/users/getTree");
+        var usersResponse = await httpClient.GetFromJsonAsync<GetUsersTreeResponse>("api/users/getTree");
 
         //
         var users = usersResponse!.Users.ToArray();

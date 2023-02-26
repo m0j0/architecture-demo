@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ArchitectureDemo.WebApiHost.Dtos;
+namespace ArchitectureDemo.WebApi.Host.Dtos;
 
 public class UploadFileRequest
 {

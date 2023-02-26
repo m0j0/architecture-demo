@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 
 namespace ArchitectureDemo.IntegrationTests;
@@ -20,7 +20,7 @@ internal class TypedClient
         );
         responseMessage.EnsureSuccessStatusCode();
         var response = await responseMessage.Content
-            .ReadFromJsonAsync<WebApiHost.Dtos.GetUserResponse>();
+            .ReadFromJsonAsync<GetUserResponse>();
         response.Should().NotBeNull();
         return response!.User;
     }
@@ -28,11 +28,11 @@ internal class TypedClient
     public async Task<CreateUserResponse> CreateUserAsync(string name, Guid? parentId = null)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("api/users/create",
-            new WebApiHost.Dtos.CreateUserRequest { Name = name, ParentId = parentId }
+            new CreateUserRequest { Name = name, ParentId = parentId }
         );
         responseMessage.EnsureSuccessStatusCode();
         var response = await responseMessage.Content
-            .ReadFromJsonAsync<WebApiHost.Dtos.CreateUserResponse>();
+            .ReadFromJsonAsync<CreateUserResponse>();
         response.Should().NotBeNull();
         return response!;
     }

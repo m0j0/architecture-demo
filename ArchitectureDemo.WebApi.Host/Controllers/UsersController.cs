@@ -1,10 +1,10 @@
 using ArchitectureDemo.Models;
 using ArchitectureDemo.Services;
 using ArchitectureDemo.ValueObjects;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ArchitectureDemo.WebApiHost.Controllers;
+namespace ArchitectureDemo.WebApi.Host.Controllers;
 
 [ApiController]
 [Route("api/users")]

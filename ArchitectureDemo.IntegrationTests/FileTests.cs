@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 using Xunit.Abstractions;
 

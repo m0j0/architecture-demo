@@ -1,4 +1,5 @@
 using ArchitectureDemo.DAL;
+using ArchitectureDemo.WebApi.Host;
 using ComposeTestEnvironment.xUnit;
 using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.AspNetCore.Hosting;
