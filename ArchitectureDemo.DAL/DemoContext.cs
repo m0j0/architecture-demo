@@ -24,5 +24,18 @@ internal sealed class DemoContext : DbContext
             .HasIndex(b => b.Email)
             .IsUnique()
             .HasDatabaseName(User.EmailUniqueIndexName);
+
+        modelBuilder.Entity<User>()
+            .HasOne(u => u.Parent)
+            .WithMany(u => u.Children)
+            .HasForeignKey(u => u.ParentId)
+            .HasConstraintName(User.ParentIdForeignKeyName)
+            .OnDelete(DeleteBehavior.NoAction);
+        
+        modelBuilder.Entity<UserFile>()
+            .HasOne(uf => uf.User)
+            .WithMany(u => u.Files)
+            .HasForeignKey(uf => uf.UserId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

@@ -39,10 +39,19 @@ internal class UsersService : IUsersService
         }
         catch (DbUpdateException e) when (e.InnerException is PostgresException
                                           {
-                                              SqlState: PostgresErrorCodes.UniqueViolation
+                                              SqlState: PostgresErrorCodes.UniqueViolation,
+                                              ConstraintName: User.EmailUniqueIndexName
                                           })
         {
             return new EmailAlreadyRegistered();
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException
+                                          {
+                                              SqlState: PostgresErrorCodes.ForeignKeyViolation,
+                                              ConstraintName: User.ParentIdForeignKeyName
+                                          })
+        {
+            return new ParentNotFound();
         }
     }
 

@@ -32,7 +32,8 @@ public class UsersController : ControllerBase
         var result = await _usersService.CreateUser(new CreateUserModel(request.Name, request.Email, request.ParentId), cancellationToken);
         return result.Match(
             userCreated => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.UserCreated, UserId = userCreated.Id.Value },
-            emailAlreadyRegistered => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.EmailAlreadyRegistered }
+            emailAlreadyRegistered => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.EmailAlreadyRegistered },
+            parentNotFound => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.ParentNotFound }
         );
     }
 

@@ -3,6 +3,7 @@ using System;
 using ArchitectureDemo.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ArchitectureDemo.DAL.Migrations
 {
     [DbContext(typeof(DemoContext))]
-    partial class DemoContextModelSnapshot : ModelSnapshot
+    [Migration("20230226184102_AddParentIdConstraint")]
+    partial class AddParentIdConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,7 +89,6 @@ namespace ArchitectureDemo.DAL.Migrations
                     b.HasOne("ArchitectureDemo.DAL.Entities.User", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.NoAction)
                         .HasConstraintName("users_parent_id_fkey");
 
                     b.Navigation("Parent");
@@ -97,7 +99,7 @@ namespace ArchitectureDemo.DAL.Migrations
                     b.HasOne("ArchitectureDemo.DAL.Entities.User", "User")
                         .WithMany("Files")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("fk_user_files_users_user_id");
 

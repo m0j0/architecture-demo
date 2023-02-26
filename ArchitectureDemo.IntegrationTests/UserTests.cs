@@ -54,6 +54,20 @@ public class UserTests : IClassFixture<TestContext>
     }
 
     [Fact]
+    public async Task CreateUser_ParentNotFoundTest()
+    {
+        await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
+        var httpClient = factory.CreateClient();
+        var typedClient = new TypedClient(httpClient);
+
+        //
+        var user = await typedClient.CreateUserAsync("User", "a@a", Guid.NewGuid());
+
+        // 
+        user.ResponseTag.Should().Be(CreateUserResponse.Tag.ParentNotFound);
+    }
+
+    [Fact]
     public async Task GetAll_Test()
     {
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);

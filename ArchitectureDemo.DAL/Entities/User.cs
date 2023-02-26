@@ -4,7 +4,9 @@ namespace ArchitectureDemo.DAL.Entities;
 
 internal class User
 {
-    public const string EmailUniqueIndexName = "user_email_key";
+    public const string EmailUniqueIndexName = "users_email_key";
+
+    public const string ParentIdForeignKeyName = "users_parent_id_fkey";
 
     [Key]
     public Guid Id { get; set; }
