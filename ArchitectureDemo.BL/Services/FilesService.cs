@@ -26,13 +26,13 @@ internal class FilesService : IFilesService
             return new UserNotFound();
         }
 
-        var userFile = await _usersRepository.GetFile(fileId, cancellationToken);
-        if (userFile == null)
+        var fileName = await _usersRepository.GetFileName(fileId, cancellationToken);
+        if (fileName == null)
         {
             return new FileNotFound();
         }
 
-        return await _s3Service.GetFile(userFile.Name, cancellationToken);
+        return await _s3Service.GetFile(fileName, cancellationToken);
     }
 
     public async Task<UploadFileResult> UploadFile(UserId userId, Stream file, string fileName, CancellationToken cancellationToken)

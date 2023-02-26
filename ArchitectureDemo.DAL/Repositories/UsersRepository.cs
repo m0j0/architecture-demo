@@ -89,12 +89,12 @@ internal class UsersRepository : IUsersRepository
             .CountAsync(cancellationToken);
     }
 
-    public async Task<Models.UserFileModel?> GetFile(FileId fileId, CancellationToken cancellationToken)
+    public async Task<string?> GetFileName(FileId fileId, CancellationToken cancellationToken)
     {
         return await _demoContext
             .UserFiles
             .Where(uf => uf.Id == fileId.Value)
-            .Select(uf => new Models.UserFileModel(new FileId(uf.Id), uf.Name))
+            .Select(uf => uf.Name)
             .FirstOrDefaultAsync(cancellationToken);
     }
 }
