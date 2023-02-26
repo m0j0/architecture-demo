@@ -9,13 +9,13 @@ internal class User
     public const string ParentIdForeignKeyName = "users_parent_id_fkey";
 
     [Key]
-    public Guid Id { get; set; }
+    public int Id { get; set; }
 
     public string Name { get; set; } = null!;
 
     public string Email { get; set; } = null!;
 
-    public Guid? ParentId { get; set; }
+    public int? ParentId { get; set; }
 
     public User? Parent { get; set; }
 

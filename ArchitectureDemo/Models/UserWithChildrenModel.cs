@@ -1,3 +1,5 @@
+using ArchitectureDemo.ValueObjects;
+
 namespace ArchitectureDemo.Models;
 
-public sealed record UserWithChildrenModel(Guid Id, string Name, IReadOnlyList<UserWithChildrenModel> Children);
+public sealed record UserWithChildrenModel(UserId Id, string Name, IReadOnlyList<UserWithChildrenModel> Children);

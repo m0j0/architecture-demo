@@ -11,6 +11,6 @@ public class UploadFileResponse
     
     public Tag ResponseTag { get; set; }
 
-    public Guid FileId { get; set; }
+    public int FileId { get; set; }
 
 }

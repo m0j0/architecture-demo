@@ -13,7 +13,7 @@ internal class TypedClient
         _httpClient = httpClient;
     }
 
-    public async Task<UserDto?> GetUserAsync(Guid id)
+    public async Task<UserDto?> GetUserAsync(int id)
     {
         var responseMessage = await _httpClient.GetAsync(
             $"api/users/getById?id={id}"
@@ -25,7 +25,7 @@ internal class TypedClient
         return response!.User;
     }
 
-    public async Task<CreateUserResponse> CreateUserAsync(string name, string email, Guid? parentId = null)
+    public async Task<CreateUserResponse> CreateUserAsync(string name, string email, int? parentId = null)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("api/users/create",
             new CreateUserRequest { Name = name, Email = email, ParentId = parentId }

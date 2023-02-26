@@ -18,7 +18,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("getById")]
-    public async Task<ActionResult<GetUserResponse>> Create(Guid id,
+    public async Task<ActionResult<GetUserResponse>> GetById(int id,
         CancellationToken cancellationToken)
     {
         var user = await _usersService.GetUser(new UserId(id), cancellationToken);
@@ -29,7 +29,11 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<CreateUserResponse>> Create(CreateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _usersService.CreateUser(new CreateUserModel(request.Name, request.Email, request.ParentId), cancellationToken);
+        var createUserModel = new CreateUserModel(Name: request.Name,
+            Email: request.Email,
+            ParentId: request.ParentId.HasValue ? new UserId(request.ParentId!.Value) : null);
+
+        var result = await _usersService.CreateUser(createUserModel, cancellationToken);
         return result.Match(
             userCreated => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.UserCreated, UserId = userCreated.Id.Value },
             emailAlreadyRegistered => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.EmailAlreadyRegistered },

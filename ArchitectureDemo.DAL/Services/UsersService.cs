@@ -7,12 +7,11 @@ using ArchitectureDemo.ValueObjects;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
-
 namespace ArchitectureDemo.DAL.Services;
 
 internal class UsersService : IUsersService
 {
-    private record UserProjection(Guid Id, string Name, Guid? ParentId);
+    private record UserProjection(int Id, string Name, int? ParentId);
 
     private readonly DemoContext _demoContext;
 
@@ -28,10 +27,9 @@ internal class UsersService : IUsersService
         {
             var user = new User
             {
-                Id = Guid.NewGuid(),
                 Name = model.Name,
                 Email = model.Email,
-                ParentId = model.ParentId
+                ParentId = model.ParentId?.Value
             };
             _demoContext.Users.Add(user);
             await _demoContext.SaveChangesAsync(cancellationToken);
@@ -61,7 +59,7 @@ internal class UsersService : IUsersService
             .Users
             .Where(u => u.Id == id.Value)
             // TODO вынести в общее создание модели на уровне класса
-            .Select(u => new UserModel(u.Id, u.Name, u.Files.Count, u.Parent!.Id, u.Parent.Name))
+            .Select(u => new UserModel(new UserId(u.Id), u.Name, u.Files.Count, u.Parent == null ? null : new UserId(u.Parent!.Id), u.Parent!.Name))
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -69,7 +67,7 @@ internal class UsersService : IUsersService
     {
         return await _demoContext
             .Users
-            .Select(u => new UserModel(u.Id, u.Name, u.Files.Count, u.Parent!.Id, u.Parent.Name))
+            .Select(u => new UserModel(new UserId(u.Id), u.Name, u.Files.Count, u.Parent == null ? null : new UserId(u.Parent!.Id), u.Parent!.Name))
             .ToArrayAsync(cancellationToken);
     }
 
@@ -85,7 +83,7 @@ internal class UsersService : IUsersService
 
         var roots = users
             .Where(u => u.ParentId is null)
-            .Select(rootUser => new UserWithChildrenModel(rootUser.Id, rootUser.Name, GetTree(users, rootUser).ToArray()))
+            .Select(rootUser => new UserWithChildrenModel(new UserId(rootUser.Id) ,rootUser.Name, GetTree(users, rootUser).ToArray()))
             .ToArray();
 
         return roots;
@@ -94,9 +92,9 @@ internal class UsersService : IUsersService
             IReadOnlyList<UserProjection> allUsers,
             UserProjection parent)
         {
-            foreach (var user in allUsers.Where(u => u.ParentId == parent.Id))
+            foreach (var user in allUsers.Where(u => u.ParentId.HasValue && u.ParentId.Value == parent.Id))
             {
-                yield return new UserWithChildrenModel(user.Id, user.Name, GetTree(allUsers, user).ToArray());
+                yield return new UserWithChildrenModel(new UserId(user.Id), user.Name, GetTree(allUsers, user).ToArray());
             }
         }
     }

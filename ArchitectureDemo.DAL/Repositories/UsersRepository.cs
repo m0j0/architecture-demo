@@ -44,7 +44,7 @@ internal class UsersRepository : IUsersRepository
 
         var connection = _demoContext.Database.GetDbConnection();
 
-        var loadedUserId = await connection.QuerySingleOrDefaultAsync<Guid?>(
+        var loadedUserId = await connection.QueryFirstOrDefaultAsync<int?>(
             new CommandDefinition(sql, new { userId = userId.Value }, cancellationToken: cancellationToken)
         );
 
@@ -67,18 +67,15 @@ internal class UsersRepository : IUsersRepository
 
     public async Task<FileId> AddFileToUser(UserId userId, string fileName, CancellationToken cancellationToken)
     {
-        var fileId = Guid.NewGuid();
-
-        _demoContext.UserFiles.Add(
-            new UserFile
-            {
-                Id = fileId,
-                UserId = userId.Value,
-                Name = fileName,
-            });
+        var newEntity = new UserFile
+        {
+            UserId = userId.Value,
+            Name = fileName
+        };
+        _demoContext.UserFiles.Add(newEntity);
         await _demoContext.SaveChangesAsync(cancellationToken);
 
-        return new FileId(fileId);
+        return new FileId(newEntity.Id);
     }
 
     public async Task<int> GetUserFilesCount(UserId userId, CancellationToken cancellationToken)

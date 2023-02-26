@@ -11,5 +11,5 @@ public class CreateUserResponse
 
     public Tag ResponseTag { get; set; }
 
-    public Guid? UserId { get; set; }
+    public int? UserId { get; set; }
 }

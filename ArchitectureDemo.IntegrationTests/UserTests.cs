@@ -61,7 +61,7 @@ public class UserTests : IClassFixture<TestContext>
         var typedClient = new TypedClient(httpClient);
 
         //
-        var user = await typedClient.CreateUserAsync("User", "a@a", Guid.NewGuid());
+        var user = await typedClient.CreateUserAsync("User", "a@a", 100200);
 
         // 
         user.ResponseTag.Should().Be(CreateUserResponse.Tag.ParentNotFound);

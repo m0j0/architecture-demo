@@ -38,7 +38,7 @@ public class FilesController : ControllerBase
     }
 
     [HttpGet("getFile")]
-    public async Task<IActionResult> GetFile(Guid userId, Guid fileId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetFile(int userId, int fileId, CancellationToken cancellationToken)
     {
         var getFileResult = await _filesService.GetFile(new UserId(userId), new FileId(fileId), cancellationToken);
 

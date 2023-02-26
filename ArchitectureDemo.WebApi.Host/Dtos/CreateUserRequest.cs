@@ -9,5 +9,5 @@ public class CreateUserRequest
     [EmailAddress]
     public string Email { get; set; } = null!;
 
-    public Guid? ParentId { get; set; }
+    public int? ParentId { get; set; }
 }
