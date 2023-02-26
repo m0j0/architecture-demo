@@ -1,3 +1,4 @@
+using ArchitectureDemo.DAL.Entities;
 using ArchitectureDemo.Models;
 using ArchitectureDemo.Results;
 using ArchitectureDemo.Services;
@@ -5,7 +6,7 @@ using ArchitectureDemo.States;
 using ArchitectureDemo.ValueObjects;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-using User = ArchitectureDemo.DAL.Entities.User;
+using Npgsql;
 
 namespace ArchitectureDemo.DAL.Services;
 
@@ -23,10 +24,26 @@ internal class UsersService : IUsersService
     public async Task<CreateUserResult> CreateUser(CreateUserModel model,
         CancellationToken cancellationToken)
     {
-        var child = new User { Id = Guid.NewGuid(), Name = model.Name, Email = model.Email, ParentId = model.ParentId };
-        _demoContext.Users.Add(child);
-        await _demoContext.SaveChangesAsync(cancellationToken);
-        return new UserCreated(new UserId(child.Id));
+        try
+        {
+            var user = new User
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Name,
+                Email = model.Email,
+                ParentId = model.ParentId
+            };
+            _demoContext.Users.Add(user);
+            await _demoContext.SaveChangesAsync(cancellationToken);
+            return new UserCreated(new UserId(user.Id));
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException
+                                          {
+                                              SqlState: PostgresErrorCodes.UniqueViolation
+                                          })
+        {
+            return new EmailAlreadyRegistered();
+        }
     }
 
     public async Task<UserModel?> GetUser(UserId id, CancellationToken cancellationToken)

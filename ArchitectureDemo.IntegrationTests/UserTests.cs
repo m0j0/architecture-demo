@@ -22,9 +22,9 @@ public class UserTests : IClassFixture<TestContext>
     {
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
         var httpClient = factory.CreateClient();
+        var typedClient = new TypedClient(httpClient);
 
         //
-        var typedClient = new TypedClient(httpClient);
         var parentResponse = await typedClient.CreateUserAsync("Parent", "a@b");
 
         // 
@@ -35,6 +35,22 @@ public class UserTests : IClassFixture<TestContext>
         var user = await typedClient.GetUserAsync(userId);
         user.Should().NotBeNull();
         user!.Name.Should().BeEquivalentTo("Parent");
+    }
+
+    [Fact]
+    public async Task CreateUser_DuplicateEmailTest()
+    {
+        await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
+        var httpClient = factory.CreateClient();
+        var typedClient = new TypedClient(httpClient);
+
+        //
+        var user1 = await typedClient.CreateUserAsync("User1", "a@b");
+        var user2 = await typedClient.CreateUserAsync("User2", "a@b");
+
+        // 
+        user1.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
+        user2.ResponseTag.Should().Be(CreateUserResponse.Tag.EmailAlreadyRegistered);
     }
 
     [Fact]
