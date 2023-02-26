@@ -37,7 +37,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("getAll")]
-    public async Task<ActionResult<GetAllUsersResponse>> GetAll(CancellationToken cancellationToken) // добавить пагинацию
+    public async Task<ActionResult<GetAllUsersResponse>> GetAll(CancellationToken cancellationToken) // 
     {
         var result = (await _usersService.GetUsers(cancellationToken)).Select(u => u.ToDto());
         return Ok(new GetAllUsersResponse(result));

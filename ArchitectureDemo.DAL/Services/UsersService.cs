@@ -33,9 +33,10 @@ internal class UsersService : IUsersService
     {
         return await _demoContext
             .Users
+            .Where(u => u.Id == id.Value)
             // TODO вынести в общее создание модели на уровне класса
             .Select(u => new UserModel(u.Id, u.Name, u.Files.Count, u.Parent!.Id, u.Parent.Name))
-            .SingleOrDefaultAsync(cancellationToken);
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<UserModel>> GetUsers(CancellationToken cancellationToken)

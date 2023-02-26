@@ -5,10 +5,11 @@ public class CreateUserResponse
     public enum Tag
     {
         UserCreated,
-        EmailAlreadyRegistered
+        EmailAlreadyRegistered,
+        ParentNotFound
     }
 
     public Tag ResponseTag { get; set; }
 
-    public Guid UserId { get; set; }
+    public Guid? UserId { get; set; }
 }

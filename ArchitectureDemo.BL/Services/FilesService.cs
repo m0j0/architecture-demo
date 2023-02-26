@@ -26,7 +26,7 @@ internal class FilesService : IFilesService
             return new UserNotFound();
         }
 
-        var userFile = await _usersRepository.GetFile(userId, fileId, cancellationToken);
+        var userFile = await _usersRepository.GetFile(fileId, cancellationToken);
         if (userFile == null)
         {
             return new FileNotFound();

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using ArchitectureDemo.ValueObjects;
 using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 using Xunit.Abstractions;
@@ -17,7 +18,27 @@ public class UserTests : IClassFixture<TestContext>
     }
 
     [Fact]
-    public async Task GetAllTest()
+    public async Task CreateUser_Scenario()
+    {
+        await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
+        var httpClient = factory.CreateClient();
+
+        //
+        var typedClient = new TypedClient(httpClient);
+        var parentResponse = await typedClient.CreateUserAsync("Parent");
+
+        // 
+        parentResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
+        var userId = parentResponse.UserId!.Value;
+
+        //
+        var user = await typedClient.GetUserAsync(userId);
+        user.Should().NotBeNull();
+        user!.Name.Should().BeEquivalentTo("Parent");
+    }
+
+    [Fact]
+    public async Task GetAll_Test()
     {
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
         var httpClient = factory.CreateClient();
@@ -34,7 +55,7 @@ public class UserTests : IClassFixture<TestContext>
     }
 
     [Fact]
-    public async Task GetTreeTest()
+    public async Task GetTree_Test()
     {
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
         var httpClient = factory.CreateClient();

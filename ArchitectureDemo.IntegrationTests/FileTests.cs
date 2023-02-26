@@ -17,7 +17,7 @@ public class FileTests : IClassFixture<TestContext>
     }
 
     [Fact]
-    public async Task UploadFileScenario()
+    public async Task UploadFile_Scenario()
     {
         const string filename = "appsettings.pdf";
 
@@ -58,7 +58,7 @@ public class FileTests : IClassFixture<TestContext>
     }
 
     [Fact]
-    public async Task GetFile_UserNotFound()
+    public async Task GetFile_UserNotFoundTest()
     {
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
         var httpClient = factory.CreateClient();
@@ -177,7 +177,7 @@ public class FileTests : IClassFixture<TestContext>
         var typedClient = new TypedClient(httpClient);
         var parentResponse = await typedClient.CreateUserAsync("User1");
         parentResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
-        var parentId = parentResponse.UserId;
+        var parentId = parentResponse.UserId!.Value;
 
         return parentId;
     }
