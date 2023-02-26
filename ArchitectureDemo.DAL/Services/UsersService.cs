@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using ArchitectureDemo.DAL.Entities;
 using ArchitectureDemo.Models;
 using ArchitectureDemo.Results;
@@ -7,11 +8,19 @@ using ArchitectureDemo.ValueObjects;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
+
 namespace ArchitectureDemo.DAL.Services;
 
 internal class UsersService : IUsersService
 {
     private record UserProjection(int Id, string Name, int? ParentId);
+    
+    private static readonly Expression<Func<User, UserModel>> UserDbToModelExpression =
+        u => new UserModel(new UserId(u.Id),
+            u.Name,
+            u.Files.Count,
+            u.Parent == null ? null : new UserId(u.Parent!.Id),
+            u.Parent == null ? null : u.Parent.Name);
 
     private readonly DemoContext _demoContext;
 
@@ -58,8 +67,7 @@ internal class UsersService : IUsersService
         return await _demoContext
             .Users
             .Where(u => u.Id == id.Value)
-            // TODO вынести в общее создание модели на уровне класса
-            .Select(u => new UserModel(new UserId(u.Id), u.Name, u.Files.Count, u.Parent == null ? null : new UserId(u.Parent!.Id), u.Parent!.Name))
+            .Select(UserDbToModelExpression)
             .FirstOrDefaultAsync(cancellationToken);
     }
 
@@ -67,8 +75,8 @@ internal class UsersService : IUsersService
     {
         return await _demoContext
             .Users
-            .Select(u => new UserModel(new UserId(u.Id), u.Name, u.Files.Count, u.Parent == null ? null : new UserId(u.Parent!.Id), u.Parent!.Name))
-            .ToArrayAsync(cancellationToken);
+            .Select(UserDbToModelExpression)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<UserWithChildrenModel>> GetUserTree(CancellationToken cancellationToken)
