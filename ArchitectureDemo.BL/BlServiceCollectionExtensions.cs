@@ -1,11 +1,12 @@
+using ArchitectureDemo.BL.Services;
 using ArchitectureDemo.Services;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ArchitectureDemo;
+namespace ArchitectureDemo.BL;
 
-public static class CoreServiceCollectionExtensions
+public static class BlServiceCollectionExtensions
 {
-    public static IServiceCollection AddArchitectureDemoCore(
+    public static IServiceCollection AddArchitectureDemoBl(
         this IServiceCollection serviceCollection)
     {
         serviceCollection.AddScoped<IFilesService, FilesService>();
