@@ -1,3 +1,3 @@
 namespace ArchitectureDemo.Models;
 
-public sealed record CreateUserModel(string Name, Guid? ParentId);
+public sealed record CreateUserModel(string Name, string Email, Guid? ParentId);

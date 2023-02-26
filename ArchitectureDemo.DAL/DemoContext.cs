@@ -17,4 +17,12 @@ internal sealed class DemoContext : DbContext
     public DbSet<User> Users { get; set; }
 
     public DbSet<UserFile> UserFiles { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<User>()
+            .HasIndex(b => b.Email)
+            .IsUnique()
+            .HasDatabaseName(User.EmailUniqueIndexName);
+    }
 }

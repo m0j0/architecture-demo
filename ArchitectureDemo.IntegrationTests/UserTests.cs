@@ -25,7 +25,7 @@ public class UserTests : IClassFixture<TestContext>
 
         //
         var typedClient = new TypedClient(httpClient);
-        var parentResponse = await typedClient.CreateUserAsync("Parent");
+        var parentResponse = await typedClient.CreateUserAsync("Parent", "a@b");
 
         // 
         parentResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
@@ -81,22 +81,22 @@ public class UserTests : IClassFixture<TestContext>
     {
         var typedClient = new TypedClient(httpClient);
 
-        var parentResponse = await typedClient.CreateUserAsync("Parent1");
+        var parentResponse = await typedClient.CreateUserAsync("Parent1", "a@b");
         parentResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
         var parentId = parentResponse.UserId;
 
         for (int i = 0; i < 3; i++)
         {
-            var childResponse = await typedClient.CreateUserAsync("Child" + i, parentId);
+            var childResponse = await typedClient.CreateUserAsync("Child" + i, "a@b" + i, parentId);
             childResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
             var childId = childResponse.UserId;
             
             for (int j = 0; j < 2; j++)
             {
-                await typedClient.CreateUserAsync("Child" + i + j, childId);
+                await typedClient.CreateUserAsync("Child" + i + j, "a@b" + i + j, childId);
             }
         }
         
-        await typedClient.CreateUserAsync("Parent2");
+        await typedClient.CreateUserAsync("Parent2", "a@c");
     }
 }

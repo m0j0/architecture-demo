@@ -25,10 +25,10 @@ internal class TypedClient
         return response!.User;
     }
 
-    public async Task<CreateUserResponse> CreateUserAsync(string name, Guid? parentId = null)
+    public async Task<CreateUserResponse> CreateUserAsync(string name, string email, Guid? parentId = null)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("api/users/create",
-            new CreateUserRequest { Name = name, ParentId = parentId }
+            new CreateUserRequest { Name = name, Email = email, ParentId = parentId }
         );
         responseMessage.EnsureSuccessStatusCode();
         var response = await responseMessage.Content

@@ -175,7 +175,7 @@ public class FileTests : IClassFixture<TestContext>
     private static async Task<Guid> CreateUser(HttpClient httpClient)
     {
         var typedClient = new TypedClient(httpClient);
-        var parentResponse = await typedClient.CreateUserAsync("User1");
+        var parentResponse = await typedClient.CreateUserAsync("User1", "a@b");
         parentResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
         var parentId = parentResponse.UserId!.Value;
 

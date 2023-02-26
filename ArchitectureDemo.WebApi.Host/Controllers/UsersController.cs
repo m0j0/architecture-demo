@@ -29,7 +29,7 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<CreateUserResponse>> Create(CreateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _usersService.CreateUser(new CreateUserModel(request.Name, request.ParentId), cancellationToken);
+        var result = await _usersService.CreateUser(new CreateUserModel(request.Name, request.Email, request.ParentId), cancellationToken);
         return result.Match(
             userCreated => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.UserCreated, UserId = userCreated.Id.Value },
             emailAlreadyRegistered => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.EmailAlreadyRegistered }

@@ -23,7 +23,7 @@ internal class UsersService : IUsersService
     public async Task<CreateUserResult> CreateUser(CreateUserModel model,
         CancellationToken cancellationToken)
     {
-        var child = new User { Id = Guid.NewGuid(), Name = model.Name, ParentId = model.ParentId };
+        var child = new User { Id = Guid.NewGuid(), Name = model.Name, Email = model.Email, ParentId = model.ParentId };
         _demoContext.Users.Add(child);
         await _demoContext.SaveChangesAsync(cancellationToken);
         return new UserCreated(new UserId(child.Id));
