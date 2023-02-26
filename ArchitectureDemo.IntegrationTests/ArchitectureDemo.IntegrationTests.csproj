@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ArchitectureDemo.WebApiHost\ArchitectureDemo.WebApiHost.csproj" />
+    <ProjectReference Include="..\ArchitectureDemo.WebApi.Host\ArchitectureDemo.WebApi.Host.csproj" />
   </ItemGroup>
 
 </Project>
