@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="DiscriminatedUnionGenerator" Version="0.0.5" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
 </Project>

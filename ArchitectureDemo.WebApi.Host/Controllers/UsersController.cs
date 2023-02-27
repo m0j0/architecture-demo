@@ -1,10 +1,10 @@
 using ArchitectureDemo.Models;
 using ArchitectureDemo.Services;
 using ArchitectureDemo.ValueObjects;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ArchitectureDemo.WebApiHost.Controllers;
+namespace ArchitectureDemo.WebApi.Host.Controllers;
 
 [ApiController]
 [Route("api/users")]
@@ -18,7 +18,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("getById")]
-    public async Task<ActionResult<GetUserResponse>> Create(Guid id,
+    public async Task<ActionResult<GetUserResponse>> GetById(int id,
         CancellationToken cancellationToken)
     {
         var user = await _usersService.GetUser(new UserId(id), cancellationToken);
@@ -29,15 +29,20 @@ public class UsersController : ControllerBase
     public async Task<ActionResult<CreateUserResponse>> Create(CreateUserRequest request,
         CancellationToken cancellationToken)
     {
-        var result = await _usersService.CreateUser(new CreateUserModel(request.Name, request.ParentId), cancellationToken);
+        var createUserModel = new CreateUserModel(Name: request.Name,
+            Email: request.Email,
+            ParentId: request.ParentId.HasValue ? new UserId(request.ParentId!.Value) : null);
+
+        var result = await _usersService.CreateUser(createUserModel, cancellationToken);
         return result.Match(
             userCreated => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.UserCreated, UserId = userCreated.Id.Value },
-            emailAlreadyRegistered => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.EmailAlreadyRegistered }
+            emailAlreadyRegistered => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.EmailAlreadyRegistered },
+            parentNotFound => new CreateUserResponse { ResponseTag = CreateUserResponse.Tag.ParentNotFound }
         );
     }
 
     [HttpGet("getAll")]
-    public async Task<ActionResult<GetAllUsersResponse>> GetAll(CancellationToken cancellationToken) // добавить пагинацию
+    public async Task<ActionResult<GetAllUsersResponse>> GetAll(CancellationToken cancellationToken) // 
     {
         var result = (await _usersService.GetUsers(cancellationToken)).Select(u => u.ToDto());
         return Ok(new GetAllUsersResponse(result));

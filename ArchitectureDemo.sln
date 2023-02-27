@@ -1,9 +1,8 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33103.184
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectureDemo.WebApiHost", "ArchitectureDemo.WebApiHost\ArchitectureDemo.WebApiHost.csproj", "{DC9C01F5-8CB0-4788-9D58-76A2BF6F7EB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectureDemo.WebApi.Host", "ArchitectureDemo.WebApi.Host\ArchitectureDemo.WebApi.Host.csproj", "{DC9C01F5-8CB0-4788-9D58-76A2BF6F7EB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{01EB4E69-2621-4267-8071-546415B655BF}"
 	ProjectSection(SolutionItems) = preProject
@@ -21,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectureDemo.DAL", "Arc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectureDemo.IntegrationTests", "ArchitectureDemo.IntegrationTests\ArchitectureDemo.IntegrationTests.csproj", "{AF9BBE45-088B-4539-B8E4-7B7D7318D5C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectureDemo.S3", "ArchitectureDemo.S3\ArchitectureDemo.S3.csproj", "{82F1BAD5-DEAA-4A1C-8217-799D1EF3E1FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArchitectureDemo.S3", "ArchitectureDemo.S3\ArchitectureDemo.S3.csproj", "{82F1BAD5-DEAA-4A1C-8217-799D1EF3E1FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArchitectureDemo.BL", "ArchitectureDemo.BL\ArchitectureDemo.BL.csproj", "{8576BC37-9FA1-4FA9-BAE3-36853F083DC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +50,10 @@ Global
 		{82F1BAD5-DEAA-4A1C-8217-799D1EF3E1FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{82F1BAD5-DEAA-4A1C-8217-799D1EF3E1FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{82F1BAD5-DEAA-4A1C-8217-799D1EF3E1FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8576BC37-9FA1-4FA9-BAE3-36853F083DC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8576BC37-9FA1-4FA9-BAE3-36853F083DC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8576BC37-9FA1-4FA9-BAE3-36853F083DC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8576BC37-9FA1-4FA9-BAE3-36853F083DC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,8 +1,8 @@
-namespace ArchitectureDemo.WebApiHost.Dtos;
+namespace ArchitectureDemo.WebApi.Host.Dtos;
 
 public class UserDto
 {
-    public UserDto(Guid id, string name, int filesCount, Guid? parentId, string? parentName)
+    public UserDto(int id, string name, int filesCount, int? parentId, string? parentName)
     {
         Id = id;
         Name = name;
@@ -11,13 +11,13 @@ public class UserDto
         ParentName = parentName;
     }
 
-    public Guid Id { get; }
+    public int Id { get; }
 
     public string Name { get; }
 
     public int FilesCount { get; }
 
-    public Guid? ParentId { get; }
+    public int? ParentId { get; }
 
     public string? ParentName { get; }
 }
@@ -26,6 +26,6 @@ public static class UserModelMapper
 {
     public static UserDto ToDto(this Models.UserModel user)
     {
-        return new UserDto(user.Id, user.Name, user.FilesCount, user.ParentId, user.ParentName);
+        return new UserDto(user.Id.Value, user.Name, user.FilesCount, user.ParentId?.Value, user.ParentName);
     }
 }

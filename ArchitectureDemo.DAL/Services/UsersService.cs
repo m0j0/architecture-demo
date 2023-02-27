@@ -1,3 +1,5 @@
+using System.Linq.Expressions;
+using ArchitectureDemo.DAL.Entities;
 using ArchitectureDemo.Models;
 using ArchitectureDemo.Results;
 using ArchitectureDemo.Services;
@@ -5,13 +7,20 @@ using ArchitectureDemo.States;
 using ArchitectureDemo.ValueObjects;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
-using User = ArchitectureDemo.DAL.Entities.User;
+using Npgsql;
 
 namespace ArchitectureDemo.DAL.Services;
 
 internal class UsersService : IUsersService
 {
-    private record UserProjection(Guid Id, string Name, Guid? ParentId);
+    private record UserProjection(int Id, string Name, int? ParentId);
+    
+    private static readonly Expression<Func<User, UserModel>> UserDbToModelExpression =
+        u => new UserModel(new UserId(u.Id),
+            u.Name,
+            u.Files.Count,
+            u.Parent == null ? null : new UserId(u.Parent!.Id),
+            u.Parent == null ? null : u.Parent.Name);
 
     private readonly DemoContext _demoContext;
 
@@ -23,27 +32,51 @@ internal class UsersService : IUsersService
     public async Task<CreateUserResult> CreateUser(CreateUserModel model,
         CancellationToken cancellationToken)
     {
-        var child = new User { Id = Guid.NewGuid(), Name = model.Name, ParentId = model.ParentId };
-        _demoContext.Users.Add(child);
-        await _demoContext.SaveChangesAsync(cancellationToken);
-        return new UserCreated(new UserId(child.Id));
+        try
+        {
+            var user = new User
+            {
+                Name = model.Name,
+                Email = model.Email,
+                ParentId = model.ParentId?.Value
+            };
+            _demoContext.Users.Add(user);
+            await _demoContext.SaveChangesAsync(cancellationToken);
+            return new UserCreated(new UserId(user.Id));
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException
+                                          {
+                                              SqlState: PostgresErrorCodes.UniqueViolation,
+                                              ConstraintName: User.EmailUniqueIndexName
+                                          })
+        {
+            return new EmailAlreadyRegistered();
+        }
+        catch (DbUpdateException e) when (e.InnerException is PostgresException
+                                          {
+                                              SqlState: PostgresErrorCodes.ForeignKeyViolation,
+                                              ConstraintName: User.ParentIdForeignKeyName
+                                          })
+        {
+            return new ParentNotFound();
+        }
     }
 
     public async Task<UserModel?> GetUser(UserId id, CancellationToken cancellationToken)
     {
         return await _demoContext
             .Users
-            // TODO вынести в общее создание модели на уровне класса
-            .Select(u => new UserModel(u.Id, u.Name, u.Files.Count, u.Parent!.Id, u.Parent.Name))
-            .SingleOrDefaultAsync(cancellationToken);
+            .Where(u => u.Id == id.Value)
+            .Select(UserDbToModelExpression)
+            .FirstOrDefaultAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<UserModel>> GetUsers(CancellationToken cancellationToken)
     {
         return await _demoContext
             .Users
-            .Select(u => new UserModel(u.Id, u.Name, u.Files.Count, u.Parent!.Id, u.Parent.Name))
-            .ToArrayAsync(cancellationToken);
+            .Select(UserDbToModelExpression)
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IReadOnlyList<UserWithChildrenModel>> GetUserTree(CancellationToken cancellationToken)
@@ -58,7 +91,7 @@ internal class UsersService : IUsersService
 
         var roots = users
             .Where(u => u.ParentId is null)
-            .Select(rootUser => new UserWithChildrenModel(rootUser.Id, rootUser.Name, GetTree(users, rootUser).ToArray()))
+            .Select(rootUser => new UserWithChildrenModel(new UserId(rootUser.Id) ,rootUser.Name, GetTree(users, rootUser).ToArray()))
             .ToArray();
 
         return roots;
@@ -67,9 +100,9 @@ internal class UsersService : IUsersService
             IReadOnlyList<UserProjection> allUsers,
             UserProjection parent)
         {
-            foreach (var user in allUsers.Where(u => u.ParentId == parent.Id))
+            foreach (var user in allUsers.Where(u => u.ParentId.HasValue && u.ParentId.Value == parent.Id))
             {
-                yield return new UserWithChildrenModel(user.Id, user.Name, GetTree(allUsers, user).ToArray());
+                yield return new UserWithChildrenModel(new UserId(user.Id), user.Name, GetTree(allUsers, user).ToArray());
             }
         }
     }

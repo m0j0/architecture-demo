@@ -17,3 +17,5 @@ public sealed record FilesCountLimitExceeded;
 public sealed record UserCreated(UserId Id);
 
 public sealed record EmailAlreadyRegistered;
+
+public sealed record ParentNotFound;

@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 
 namespace ArchitectureDemo.IntegrationTests;
@@ -13,26 +13,26 @@ internal class TypedClient
         _httpClient = httpClient;
     }
 
-    public async Task<UserDto?> GetUserAsync(Guid id)
+    public async Task<UserDto?> GetUserAsync(int id)
     {
         var responseMessage = await _httpClient.GetAsync(
             $"api/users/getById?id={id}"
         );
         responseMessage.EnsureSuccessStatusCode();
         var response = await responseMessage.Content
-            .ReadFromJsonAsync<WebApiHost.Dtos.GetUserResponse>();
+            .ReadFromJsonAsync<GetUserResponse>();
         response.Should().NotBeNull();
         return response!.User;
     }
 
-    public async Task<CreateUserResponse> CreateUserAsync(string name, Guid? parentId = null)
+    public async Task<CreateUserResponse> CreateUserAsync(string name, string email, int? parentId = null)
     {
         var responseMessage = await _httpClient.PostAsJsonAsync("api/users/create",
-            new WebApiHost.Dtos.CreateUserRequest { Name = name, ParentId = parentId }
+            new CreateUserRequest { Name = name, Email = email, ParentId = parentId }
         );
         responseMessage.EnsureSuccessStatusCode();
         var response = await responseMessage.Content
-            .ReadFromJsonAsync<WebApiHost.Dtos.CreateUserResponse>();
+            .ReadFromJsonAsync<CreateUserResponse>();
         response.Should().NotBeNull();
         return response!;
     }

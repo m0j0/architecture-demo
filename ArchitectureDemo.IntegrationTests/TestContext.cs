@@ -1,4 +1,5 @@
 using ArchitectureDemo.DAL;
+using ArchitectureDemo.WebApi.Host;
 using ComposeTestEnvironment.xUnit;
 using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.AspNetCore.Hosting;
@@ -24,6 +25,9 @@ public class TestContext : DockerComposeEnvironmentFixture<ComposeDescriptor>
         var pgConnectionString = Discovery.Substitute(
             "Server=$(pg.host);Port=$(pg.5432);Database=DemoDb;User Id=postgres;Password=postgres;");
         testOutputHelper.WriteLine($"PG conn string: {pgConnectionString}");
+
+        var pgAdmin = Discovery.Substitute("http://127.0.0.1:$(pgadmin.5050)");
+        testOutputHelper.WriteLine($"PGadmin: {pgAdmin}");
 
         var minioService = Discovery.Substitute("http://127.0.0.1:$(minio.9000)");
         var minioConsole = Discovery.Substitute("http://127.0.0.1:$(minio.9001)");
@@ -68,6 +72,7 @@ public class ComposeDescriptor : DockerComposeDescriptor
     public override IReadOnlyDictionary<string, int[]> Ports => new Dictionary<string, int[]>
     {
         ["pg"] = new[] { 5432 },
+        ["pgadmin"] = new[] { 5050 },
         ["minio"] = new[] { 9000, 9001 }
     };
 

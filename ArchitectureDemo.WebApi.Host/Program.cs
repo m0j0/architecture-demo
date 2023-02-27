@@ -1,4 +1,4 @@
-using ArchitectureDemo;
+using ArchitectureDemo.BL;
 using ArchitectureDemo.DAL;
 using ArchitectureDemo.S3;
 using ArchitectureDemo.Settings;
@@ -19,7 +19,7 @@ builder.Services.AddOptions<S3Settings>()
 builder.Services.AddSingleton<RecyclableMemoryStreamManager>();
 
 builder.Services
-    .AddArchitectureDemoCore()
+    .AddArchitectureDemoBl()
     .AddArchitectureDemoDal()
     .AddArchitectureDemoS3();
 

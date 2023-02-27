@@ -1,3 +1,3 @@
 namespace ArchitectureDemo.ValueObjects;
 
-public record UserId(Guid Value);
+public record UserId(int Value);

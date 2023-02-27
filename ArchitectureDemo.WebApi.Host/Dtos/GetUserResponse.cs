@@ -1,4 +1,4 @@
-namespace ArchitectureDemo.WebApiHost.Dtos;
+namespace ArchitectureDemo.WebApi.Host.Dtos;
 
 public class GetUserResponse
 {

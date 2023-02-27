@@ -14,5 +14,5 @@ public interface IUsersRepository
 
     Task<int> GetUserFilesCount(UserId userId, CancellationToken cancellationToken);
 
-    Task<UserFileModel?> GetFile(UserId userId, FileId fileId, CancellationToken cancellationToken);
+    Task<string?> GetFileName(FileId fileId, CancellationToken cancellationToken);
 }

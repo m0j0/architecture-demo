@@ -1,5 +1,5 @@
 using System.Net.Http.Json;
-using ArchitectureDemo.WebApiHost.Dtos;
+using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 using Xunit.Abstractions;
 
@@ -17,7 +17,7 @@ public class FileTests : IClassFixture<TestContext>
     }
 
     [Fact]
-    public async Task UploadFileScenario()
+    public async Task UploadFile_Scenario()
     {
         const string filename = "appsettings.pdf";
 
@@ -58,13 +58,13 @@ public class FileTests : IClassFixture<TestContext>
     }
 
     [Fact]
-    public async Task GetFile_UserNotFound()
+    public async Task GetFile_UserNotFoundTest()
     {
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
         var httpClient = factory.CreateClient();
 
         //
-        var getFileResponseMessage = await httpClient.GetAsync($"api/files/getFile?userId={Guid.NewGuid()}&fileId={Guid.NewGuid()}");
+        var getFileResponseMessage = await httpClient.GetAsync($"api/files/getFile?userId={100100}&fileId={200200}");
 
         //
         getFileResponseMessage.IsSuccessStatusCode.Should().BeTrue();
@@ -84,7 +84,7 @@ public class FileTests : IClassFixture<TestContext>
         var userId = await CreateUser(httpClient);
 
         //
-        var getFileResponseMessage = await httpClient.GetAsync($"api/files/getFile?userId={userId}&fileId={Guid.NewGuid()}");
+        var getFileResponseMessage = await httpClient.GetAsync($"api/files/getFile?userId={userId}&fileId={100200}");
 
         //
         getFileResponseMessage.IsSuccessStatusCode.Should().BeTrue();
@@ -160,7 +160,7 @@ public class FileTests : IClassFixture<TestContext>
         var fileContent = new ByteArrayContent(sourceFile);
         requestContent.Add(fileContent, "file", filename);
 
-        requestContent.Add(new StringContent(Guid.NewGuid().ToString()), "userId");
+        requestContent.Add(new StringContent("200000"), "userId");
 
         var uploadFileResponseMessage = await httpClient.PostAsync("api/files/uploadUserFile", requestContent);
         
@@ -172,12 +172,12 @@ public class FileTests : IClassFixture<TestContext>
         uploadFileResponse!.ResponseTag.Should().Be(UploadFileResponse.Tag.UserNotFound);
     }
 
-    private static async Task<Guid> CreateUser(HttpClient httpClient)
+    private static async Task<int> CreateUser(HttpClient httpClient)
     {
         var typedClient = new TypedClient(httpClient);
-        var parentResponse = await typedClient.CreateUserAsync("User1");
+        var parentResponse = await typedClient.CreateUserAsync("User1", "a@b");
         parentResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
-        var parentId = parentResponse.UserId;
+        var parentId = parentResponse.UserId!.Value;
 
         return parentId;
     }
