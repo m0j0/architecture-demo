@@ -1,60 +1,23 @@
 using ArchitectureDemo.DAL.Entities;
+using ArchitectureDemo.Infrastructure;
 using ArchitectureDemo.Repositories;
 using ArchitectureDemo.Results;
 using ArchitectureDemo.States;
 using ArchitectureDemo.ValueObjects;
-using Dapper;
+using Medallion.Threading.Postgres;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace ArchitectureDemo.DAL.Repositories;
 
 internal class UsersRepository : IUsersRepository
 {
-    private class Lock : IAsyncDisposable
-    {
-        private readonly IDbContextTransaction _transaction;
-        private readonly CancellationToken _cancellationToken;
-
-        public Lock(IDbContextTransaction transaction, CancellationToken cancellationToken)
-        {
-            _transaction = transaction;
-            _cancellationToken = cancellationToken;
-        }
-
-        public async ValueTask DisposeAsync()
-        {
-            await _transaction.CommitAsync(_cancellationToken);
-            await _transaction.DisposeAsync();
-        }
-    }
-
     private readonly DemoContext _demoContext;
+    private readonly ISystemClock _systemClock;
 
-    public UsersRepository(DemoContext demoContext)
+    public UsersRepository(DemoContext demoContext, ISystemClock systemClock)
     {
         _demoContext = demoContext;
-    }
-
-    public async Task<LockResult> LockUser(UserId userId, CancellationToken cancellationToken)
-    {
-        const string sql = "select id from users where id = @userId for update;";
-
-        var transaction = await _demoContext.Database.BeginTransactionAsync(cancellationToken);
-
-        var connection = _demoContext.Database.GetDbConnection();
-
-        var loadedUserId = await connection.QueryFirstOrDefaultAsync<int?>(
-            new CommandDefinition(sql, new { userId = userId.Value }, cancellationToken: cancellationToken)
-        );
-
-        if (loadedUserId.HasValue && loadedUserId.Value == userId.Value)
-        {
-            return new LockAcquired(new Lock(transaction, cancellationToken));
-        }
-
-        await transaction.RollbackAsync(cancellationToken);
-        return new UserNotFound();
+        _systemClock = systemClock;
     }
 
     public async Task<bool> DoesUserExist(UserId userId, CancellationToken cancellationToken)
@@ -70,7 +33,8 @@ internal class UsersRepository : IUsersRepository
         var newEntity = new UserFile
         {
             UserId = userId.Value,
-            Name = fileName
+            Name = fileName,
+            CreationDate = _systemClock.UtcNow.UtcDateTime
         };
         _demoContext.UserFiles.Add(newEntity);
         await _demoContext.SaveChangesAsync(cancellationToken);

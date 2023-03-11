@@ -12,6 +12,8 @@ public sealed record UserNotFound;
 
 public sealed record LockAcquired(IAsyncDisposable Lock);
 
+public sealed record AlreadyLocked;
+
 public sealed record FilesCountLimitExceeded;
 
 public sealed record UserCreated(UserId Id);

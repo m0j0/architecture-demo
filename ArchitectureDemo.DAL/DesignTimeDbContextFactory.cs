@@ -8,7 +8,11 @@ internal class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<DemoCont
     public DemoContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<DemoContext>();
-        optionsBuilder.UseNpgsql("Server=localhost;Port=5432;Database=DemoDb;User Id=postgres;Password=postgres;").UseSnakeCaseNamingConvention();
+
+        DemoContext.ConfigureDbContextOptionsBuilder(
+            optionsBuilder,
+            "Server=localhost;Port=5432;Database=DemoDb;User Id=postgres;Password=postgres;"
+        );
 
         return new DemoContext(optionsBuilder.Options);
     }

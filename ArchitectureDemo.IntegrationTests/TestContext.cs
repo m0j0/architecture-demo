@@ -4,6 +4,7 @@ using ComposeTestEnvironment.xUnit;
 using Meziantou.Extensions.Logging.Xunit;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -20,10 +21,16 @@ public class TestContext : DockerComposeEnvironmentFixture<ComposeDescriptor>
     {
     }
 
+    internal async Task<DemoContext> CreateDb(ITestOutputHelper testOutputHelper)
+    {
+        return await CreateDbInternal(testOutputHelper.WriteLine);
+    }
+
     public async Task<WebApplicationFactory<Program>> CreateWebApplicationFactory(ITestOutputHelper testOutputHelper)
     {
-        var pgConnectionString = Discovery.Substitute(
-            "Server=$(pg.host);Port=$(pg.5432);Database=DemoDb;User Id=postgres;Password=postgres;");
+        await using var dbContext = await CreateDbInternal(null);
+
+        var pgConnectionString = dbContext.Database.GetConnectionString();
         testOutputHelper.WriteLine($"PG conn string: {pgConnectionString}");
 
         var pgAdmin = Discovery.Substitute("http://127.0.0.1:$(pgadmin.5050)");
@@ -52,14 +59,33 @@ public class TestContext : DockerComposeEnvironmentFixture<ComposeDescriptor>
                         });
                 });
             });
+        
+        return factory;
+    }
 
-        await using var scope = factory.Services.CreateAsyncScope();
-        await using var context = scope.ServiceProvider.GetRequiredService<DemoContext>();
+    private async Task<DemoContext> CreateDbInternal(Action<string>? logToAction)
+    {
+        var optionsBuilder = new DbContextOptionsBuilder<DemoContext>();
+
+        if (logToAction != null)
+        {
+            optionsBuilder.LogTo(logToAction, LogLevel.Information);
+        }
+
+        var connectionString = Discovery.Substitute(
+            "Server=$(pg.host);Port=$(pg.5432);Database=DemoDb;User Id=postgres;Password=postgres;");
+
+        DemoContext.ConfigureDbContextOptionsBuilder(
+            optionsBuilder,
+            connectionString
+        );
+
+        var context = new DemoContext(optionsBuilder.Options);
 
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
 
-        return factory;
+        return context;
     }
 }
 

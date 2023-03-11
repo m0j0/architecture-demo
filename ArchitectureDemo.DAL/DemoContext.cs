@@ -38,4 +38,16 @@ internal sealed class DemoContext : DbContext
             .HasForeignKey(uf => uf.UserId)
             .OnDelete(DeleteBehavior.NoAction);
     }
+
+    internal static void ConfigureDbContextOptionsBuilder(DbContextOptionsBuilder optionsBuilder,
+        string connectionString)
+    {
+        optionsBuilder
+            .UseNpgsql(connectionString)
+            .UseSnakeCaseNamingConvention();
+
+#if DEBUG
+        optionsBuilder.EnableSensitiveDataLogging();
+#endif
+    }
 }

@@ -1,7 +1,9 @@
 using ArchitectureDemo.BL;
 using ArchitectureDemo.DAL;
+using ArchitectureDemo.Infrastructure;
 using ArchitectureDemo.S3;
 using ArchitectureDemo.Settings;
+using ArchitectureDemo.WebApi.Host.Infrastructure;
 using Microsoft.IO;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +18,13 @@ builder.Services.AddOptions<S3Settings>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services.AddOptions<ConnectionStringSettings>()
+    .Bind(builder.Configuration.GetSection("ConnectionStrings"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 builder.Services.AddSingleton<RecyclableMemoryStreamManager>();
+builder.Services.AddSingleton<ISystemClock, SystemClock>();
 
 builder.Services
     .AddArchitectureDemoBl()

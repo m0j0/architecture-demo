@@ -11,5 +11,7 @@ internal class UserFile
 
     public string Name { get; set; } = null!;
 
+    public DateTimeOffset CreationDate { get; set; }
+
     public User User { get; set; } = null!;
 }

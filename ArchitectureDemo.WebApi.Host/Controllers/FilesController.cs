@@ -33,7 +33,8 @@ public class FilesController : ControllerBase
         return result.Match<ActionResult<UploadFileResponse>>(
             success => Ok(new UploadFileResponse { ResponseTag = UploadFileResponse.Tag.Success, FileId = success.FileId.Value }),
             userNotFound => Ok(new UploadFileResponse { ResponseTag = UploadFileResponse.Tag.UserNotFound }),
-            limitExceeded => Ok(new UploadFileResponse { ResponseTag = UploadFileResponse.Tag.FilesCountLimitExceeded })
+            limitExceeded => Ok(new UploadFileResponse { ResponseTag = UploadFileResponse.Tag.FilesCountLimitExceeded }),
+            alreadyLocked => Ok(new UploadFileResponse { ResponseTag = UploadFileResponse.Tag.AlreadyLocked })
         );
     }
 

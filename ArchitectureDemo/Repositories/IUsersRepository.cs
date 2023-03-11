@@ -6,8 +6,6 @@ namespace ArchitectureDemo.Repositories;
 
 public interface IUsersRepository
 {
-    Task<LockResult> LockUser(UserId userId, CancellationToken cancellationToken);
-
     Task<bool> DoesUserExist(UserId userId, CancellationToken cancellationToken);
         
     Task<FileId> AddFileToUser(UserId userId, string fileName, CancellationToken cancellationToken);

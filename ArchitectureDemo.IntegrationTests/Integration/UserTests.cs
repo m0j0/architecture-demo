@@ -4,7 +4,7 @@ using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 using Xunit.Abstractions;
 
-namespace ArchitectureDemo.IntegrationTests;
+namespace ArchitectureDemo.IntegrationTests.Integration;
 
 public class UserTests : IClassFixture<TestContext>
 {
@@ -120,13 +120,13 @@ public class UserTests : IClassFixture<TestContext>
             var childResponse = await typedClient.CreateUserAsync("Child" + i, "a@b" + i, parentId);
             childResponse.ResponseTag.Should().Be(CreateUserResponse.Tag.UserCreated);
             var childId = childResponse.UserId;
-            
+
             for (int j = 0; j < 2; j++)
             {
                 await typedClient.CreateUserAsync("Child" + i + j, "a@b" + i + j, childId);
             }
         }
-        
+
         await typedClient.CreateUserAsync("Parent2", "a@c");
     }
 }

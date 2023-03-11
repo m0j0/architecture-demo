@@ -12,11 +12,13 @@ internal class FilesService : IFilesService
 
     private readonly IUsersRepository _usersRepository;
     private readonly IS3Service _s3Service;
+    private readonly ILockService _lockService;
 
-    public FilesService(IUsersRepository usersRepository, IS3Service s3Service)
+    public FilesService(IUsersRepository usersRepository, IS3Service s3Service, ILockService lockService)
     {
         _usersRepository = usersRepository;
         _s3Service = s3Service;
+        _lockService = lockService;
     }
 
     public async Task<GetFileResult> GetFile(UserId userId, FileId fileId, CancellationToken cancellationToken)
@@ -37,7 +39,12 @@ internal class FilesService : IFilesService
 
     public async Task<UploadFileResult> UploadFile(UserId userId, Stream file, string fileName, CancellationToken cancellationToken)
     {
-        await using var lockResult = await _usersRepository.LockUser(userId, cancellationToken);
+        if (!await _usersRepository.DoesUserExist(userId, cancellationToken))
+        {
+            return new UserNotFound();
+        }
+
+        await using var lockResult = await _lockService.Acquire("UserLock", cancellationToken);
 
         return await lockResult
             .MatchAsync(
@@ -55,6 +62,6 @@ internal class FilesService : IFilesService
 
                     return new UploadFileSuccess(fileId);
                 },
-                userNotFound => Task.FromResult<UploadFileResult>(userNotFound));
+                alreadyLocked => Task.FromResult<UploadFileResult>(alreadyLocked));
     }
 }
