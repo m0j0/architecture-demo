@@ -23,6 +23,7 @@ public static class DalServiceCollectionExtensions
 
         serviceCollection.AddScoped<IUsersService, UsersService>();
         serviceCollection.AddScoped<IUsersRepository, UsersRepository>();
+        serviceCollection.AddScoped<ILockService, LockService>();
 
         return serviceCollection;
     }

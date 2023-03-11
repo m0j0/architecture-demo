@@ -20,22 +20,6 @@ internal class UsersRepository : IUsersRepository
         _systemClock = systemClock;
     }
 
-    public async Task<LockResult> LockUser(UserId userId, CancellationToken cancellationToken)
-    {
-        var connectionString = _demoContext.Database.GetConnectionString() ??
-                               throw new InvalidOperationException();
-
-        var @lock = new PostgresDistributedLock(new PostgresAdvisoryLockKey("UserLock", allowHashing: true), connectionString);
-
-        var handle = await @lock.TryAcquireAsync(cancellationToken: cancellationToken);
-        if (handle == null)
-        {
-            return new AlreadyLocked();
-        }
-
-        return new LockAcquired(handle);
-    }
-
     public async Task<bool> DoesUserExist(UserId userId, CancellationToken cancellationToken)
     {
         return await _demoContext
