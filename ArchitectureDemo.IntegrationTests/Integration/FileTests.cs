@@ -3,7 +3,7 @@ using ArchitectureDemo.WebApi.Host.Dtos;
 using FluentAssertions;
 using Xunit.Abstractions;
 
-namespace ArchitectureDemo.IntegrationTests;
+namespace ArchitectureDemo.IntegrationTests.Integration;
 
 public class FileTests : IClassFixture<TestContext>
 {
@@ -37,7 +37,7 @@ public class FileTests : IClassFixture<TestContext>
         requestContent.Add(new StringContent(userId.ToString()), "userId");
 
         var uploadFileResponseMessage = await httpClient.PostAsync("api/files/uploadUserFile", requestContent);
-        
+
         //
         uploadFileResponseMessage.IsSuccessStatusCode.Should().BeTrue();
 
@@ -49,7 +49,7 @@ public class FileTests : IClassFixture<TestContext>
 
         //
         var downloadedFileResponse = await httpClient.GetAsync($"api/files/getFile?userId={userId}&fileId={fileId}");
-        
+
         downloadedFileResponse.IsSuccessStatusCode.Should().BeTrue();
 
         var downloadedFile = await downloadedFileResponse.Content.ReadAsByteArrayAsync();
@@ -151,7 +151,7 @@ public class FileTests : IClassFixture<TestContext>
 
         await using var factory = await _context.CreateWebApplicationFactory(_testOutputHelper);
         var httpClient = factory.CreateClient();
-        
+
         var sourceFile = await File.ReadAllBytesAsync("appsettings.json");
 
         //
@@ -163,7 +163,7 @@ public class FileTests : IClassFixture<TestContext>
         requestContent.Add(new StringContent("200000"), "userId");
 
         var uploadFileResponseMessage = await httpClient.PostAsync("api/files/uploadUserFile", requestContent);
-        
+
         //
         uploadFileResponseMessage.IsSuccessStatusCode.Should().BeTrue();
 
