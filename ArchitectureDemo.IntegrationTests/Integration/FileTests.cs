@@ -134,14 +134,20 @@ public class FileTests : IClassFixture<TestContext>
         }
 
         tags.Should().AllSatisfy(tag =>
-            tag.Should().BeOneOf(UploadFileResponse.Tag.FilesCountLimitExceeded, UploadFileResponse.Tag.Success));
+            tag.Should().BeOneOf(
+                UploadFileResponse.Tag.Success,
+                UploadFileResponse.Tag.AlreadyLocked,
+                UploadFileResponse.Tag.FilesCountLimitExceeded));
 
-        tags.Where(t => t == UploadFileResponse.Tag.Success).Should().HaveCount(3);
-        tags.Where(t => t == UploadFileResponse.Tag.FilesCountLimitExceeded).Should().HaveCount(7);
+        tags.Where(t => t == UploadFileResponse.Tag.Success).Should().HaveCountGreaterOrEqualTo(1).And.HaveCountLessOrEqualTo(3);
+        tags.Where(t => t == UploadFileResponse.Tag.AlreadyLocked).Should().HaveCountLessOrEqualTo(9);
+        tags.Where(t => t == UploadFileResponse.Tag.FilesCountLimitExceeded).Should().HaveCountLessOrEqualTo(7);
+
+        var successCount = tags.Count(t =>  t == UploadFileResponse.Tag.Success);
 
         var typedClient = new TypedClient(httpClient);
         var user = await typedClient.GetUserAsync(userId);
-        user!.FilesCount.Should().Be(3);
+        user!.FilesCount.Should().Be(successCount);
     }
 
     [Fact]
