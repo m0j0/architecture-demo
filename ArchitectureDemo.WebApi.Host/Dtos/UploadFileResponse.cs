@@ -6,7 +6,8 @@ public class UploadFileResponse
     {
         Success,
         UserNotFound,
-        FilesCountLimitExceeded
+        FilesCountLimitExceeded,
+        AlreadyLocked
     }
     
     public Tag ResponseTag { get; set; }

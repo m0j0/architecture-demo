@@ -37,6 +37,11 @@ internal class FilesService : IFilesService
 
     public async Task<UploadFileResult> UploadFile(UserId userId, Stream file, string fileName, CancellationToken cancellationToken)
     {
+        if (!await _usersRepository.DoesUserExist(userId, cancellationToken))
+        {
+            return new UserNotFound();
+        }
+
         await using var lockResult = await _usersRepository.LockUser(userId, cancellationToken);
 
         return await lockResult
@@ -55,6 +60,6 @@ internal class FilesService : IFilesService
 
                     return new UploadFileSuccess(fileId);
                 },
-                userNotFound => Task.FromResult<UploadFileResult>(userNotFound));
+                alreadyLocked => Task.FromResult<UploadFileResult>(alreadyLocked));
     }
 }

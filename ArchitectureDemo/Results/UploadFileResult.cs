@@ -6,4 +6,5 @@ namespace ArchitectureDemo.Results;
 [DiscriminatedUnionCase(typeof(UploadFileSuccess))]
 [DiscriminatedUnionCase(typeof(UserNotFound))]
 [DiscriminatedUnionCase(typeof(FilesCountLimitExceeded))]
+[DiscriminatedUnionCase(typeof(AlreadyLocked))]
 public sealed partial record UploadFileResult;
