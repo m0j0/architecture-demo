@@ -44,7 +44,7 @@ internal class FilesService : IFilesService
             return new UserNotFound();
         }
 
-        await using var lockResult = await _lockService.Acquire("UserLock", cancellationToken);
+        await using var lockResult = await _lockService.Acquire("UserLock", cancellationToken); // TODO юзера учитывать в локе
 
         return await lockResult
             .MatchAsync(
