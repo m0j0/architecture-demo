@@ -2,7 +2,6 @@ using ArchitectureDemo.DAL.Repositories;
 using ArchitectureDemo.DAL.Services;
 using ArchitectureDemo.Repositories;
 using ArchitectureDemo.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,14 +15,10 @@ public static class DalServiceCollectionExtensions
         serviceCollection.AddDbContextPool<DemoContext>((provider, optionsBuilder) =>
         {
             var configuration = provider.GetRequiredService<IConfiguration>();
+            var connectionString = configuration.GetConnectionString("DemoDb") ??
+                                   throw new InvalidOperationException();
 
-            optionsBuilder
-                .UseNpgsql(configuration.GetConnectionString("DemoDb"))
-                .UseSnakeCaseNamingConvention();
-
-#if DEBUG
-            optionsBuilder.EnableSensitiveDataLogging();
-#endif
+            DemoContext.ConfigureDbContextOptionsBuilder(optionsBuilder, connectionString);
         });
 
         serviceCollection.AddScoped<IUsersService, UsersService>();
