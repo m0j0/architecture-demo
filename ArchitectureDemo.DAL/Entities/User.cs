@@ -17,6 +17,8 @@ internal class User
 
     public int? ParentId { get; set; }
 
+    public DateTimeOffset CreationDate { get; set; }
+
     public User? Parent { get; set; }
 
     public List<User> Children { get; set; } = null!;

@@ -1,4 +1,5 @@
 using ArchitectureDemo.DAL.Entities;
+using ArchitectureDemo.Infrastructure;
 using ArchitectureDemo.Repositories;
 using ArchitectureDemo.Results;
 using ArchitectureDemo.States;
@@ -30,10 +31,12 @@ internal class UsersRepository : IUsersRepository
     }
 
     private readonly DemoContext _demoContext;
+    private readonly ISystemClock _systemClock;
 
-    public UsersRepository(DemoContext demoContext)
+    public UsersRepository(DemoContext demoContext, ISystemClock systemClock)
     {
         _demoContext = demoContext;
+        _systemClock = systemClock;
     }
 
     public async Task<LockResult> LockUser(UserId userId, CancellationToken cancellationToken)
@@ -70,7 +73,8 @@ internal class UsersRepository : IUsersRepository
         var newEntity = new UserFile
         {
             UserId = userId.Value,
-            Name = fileName
+            Name = fileName,
+            CreationDate = _systemClock.UtcNow.UtcDateTime
         };
         _demoContext.UserFiles.Add(newEntity);
         await _demoContext.SaveChangesAsync(cancellationToken);

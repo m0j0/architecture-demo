@@ -1,5 +1,6 @@
 using System.Linq.Expressions;
 using ArchitectureDemo.DAL.Entities;
+using ArchitectureDemo.Infrastructure;
 using ArchitectureDemo.Models;
 using ArchitectureDemo.Results;
 using ArchitectureDemo.Services;
@@ -23,10 +24,12 @@ internal class UsersService : IUsersService
             u.Parent == null ? null : u.Parent.Name);
 
     private readonly DemoContext _demoContext;
+    private readonly ISystemClock _systemClock;
 
-    public UsersService(DemoContext demoContext)
+    public UsersService(DemoContext demoContext, ISystemClock systemClock)
     {
         _demoContext = demoContext;
+        _systemClock = systemClock;
     }
 
     public async Task<CreateUserResult> CreateUser(CreateUserModel model,
@@ -38,7 +41,8 @@ internal class UsersService : IUsersService
             {
                 Name = model.Name,
                 Email = model.Email,
-                ParentId = model.ParentId?.Value
+                ParentId = model.ParentId?.Value,
+                CreationDate = _systemClock.UtcNow.UtcDateTime
             };
             _demoContext.Users.Add(user);
             await _demoContext.SaveChangesAsync(cancellationToken);
