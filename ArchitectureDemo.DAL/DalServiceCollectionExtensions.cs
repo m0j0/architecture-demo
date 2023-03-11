@@ -2,8 +2,10 @@ using ArchitectureDemo.DAL.Repositories;
 using ArchitectureDemo.DAL.Services;
 using ArchitectureDemo.Repositories;
 using ArchitectureDemo.Services;
+using ArchitectureDemo.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ArchitectureDemo.DAL;
 
@@ -14,11 +16,9 @@ public static class DalServiceCollectionExtensions
     {
         serviceCollection.AddDbContextPool<DemoContext>((provider, optionsBuilder) =>
         {
-            var configuration = provider.GetRequiredService<IConfiguration>();
-            var connectionString = configuration.GetConnectionString("DemoDb") ??
-                                   throw new InvalidOperationException();
+            var options = provider.GetRequiredService<IOptionsMonitor<ConnectionStringSettings>>();
 
-            DemoContext.ConfigureDbContextOptionsBuilder(optionsBuilder, connectionString);
+            DemoContext.ConfigureDbContextOptionsBuilder(optionsBuilder, options.CurrentValue.DemoDb);
         });
 
         serviceCollection.AddScoped<IUsersService, UsersService>();

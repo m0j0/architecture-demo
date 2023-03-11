@@ -1,24 +1,24 @@
 using ArchitectureDemo.Results;
 using ArchitectureDemo.Services;
+using ArchitectureDemo.Settings;
 using ArchitectureDemo.States;
 using Medallion.Threading.Postgres;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace ArchitectureDemo.DAL.Services;
 
 internal class LockService : ILockService
 {
-    private readonly DemoContext _demoContext;
+    private readonly IOptionsMonitor<ConnectionStringSettings> _optionsMonitor;
 
-    public LockService(DemoContext demoContext)
+    public LockService(IOptionsMonitor<ConnectionStringSettings> optionsMonitor)
     {
-        _demoContext = demoContext;
+        _optionsMonitor = optionsMonitor;
     }
     public async Task<LockResult> Acquire(string lockName, CancellationToken cancellationToken)
     {
-        var connectionString = _demoContext.Database.GetConnectionString() ??
-                               throw new InvalidOperationException();
-
+        var connectionString = _optionsMonitor.CurrentValue.DemoDb;
         var @lock = new PostgresDistributedLock(new PostgresAdvisoryLockKey(lockName, allowHashing: true), connectionString);
 
         var handle = await @lock.TryAcquireAsync(cancellationToken: cancellationToken);

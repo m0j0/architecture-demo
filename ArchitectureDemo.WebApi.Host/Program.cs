@@ -18,6 +18,11 @@ builder.Services.AddOptions<S3Settings>()
     .ValidateDataAnnotations()
     .ValidateOnStart();
 
+builder.Services.AddOptions<ConnectionStringSettings>()
+    .Bind(builder.Configuration.GetSection("ConnectionStrings"))
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 builder.Services.AddSingleton<RecyclableMemoryStreamManager>();
 builder.Services.AddSingleton<ISystemClock, SystemClock>();
 
