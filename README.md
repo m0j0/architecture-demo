@@ -92,6 +92,12 @@ https://github.com/dotnet/csharplang/issues/7016
 
 в чем разница между сервисом и репозиторием
 
+https://youtu.be/1h2ODmP8Zz0 Жизнь после бизнес объектов
+https://youtu.be/qJPwSvDLmQE Быстрорастворимое проектирование https://habr.com/ru/company/jugru/blog/447308/
+https://youtu.be/J2XzsCoJM4o Деревья выражений в enterprise-разработке https://habr.com/ru/company/jugru/blog/423891/
+https://youtu.be/rFiuLeSFZsA Блеск и нищета предметной области https://habr.com/ru/company/jugru/blog/503868/
+https://youtu.be/AAD9se2LjuI Хориков "Effective Unit Testing"
+
 # Задачи
 
 - перечитать "чистую архитектуру"
