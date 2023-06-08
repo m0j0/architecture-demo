@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DiscriminatedUnionAnalyzer.Contracts" Version="0.0.1-alpha1" />
+  </ItemGroup>
+
+</Project>

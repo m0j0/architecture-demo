@@ -1,0 +1,74 @@
+version: '3.7'
+
+services:
+  pg:
+    image: postgres:14.6
+    hostname: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:6.20
+    entrypoint: >
+      /bin/sh -c "
+      cp -f /pgadmin4/pgpass /var/lib/pgadmin/;
+      chmod 600 /var/lib/pgadmin/pgpass;
+      chown pgadmin:pgadmin /var/lib/pgadmin/pgpass;
+      /entrypoint.sh
+      "
+    depends_on:
+      - pg
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "pgadmin@pgadmin.com"
+      PGADMIN_DEFAULT_PASSWORD: "pgadmin"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgadmin4/pgpass
+    ports:
+      - "5050:80"
+    networks:
+      - postgres
+
+  minio:
+   image: minio/minio:RELEASE.2023-02-17T17-52-43Z
+   command: server --console-address ":9001" /data/
+   ports:
+     - "9000:9000"
+     - "9001:9001"
+   environment:
+     MINIO_ROOT_USER: demo
+     MINIO_ROOT_PASSWORD: demodemo
+   volumes:
+     - minio-storage:/data
+   healthcheck:
+     test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+     interval: 30s
+     timeout: 20s
+     retries: 3
+     
+  create_user:
+    image: minio/mc:RELEASE.2023-02-16T19-20-11Z
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 demo demodemo;
+      /usr/bin/mc admin user svcacct add --access-key myuserserviceaccount --secret-key myuserserviceaccountpassword myminio demo;
+      /usr/bin/mc mb myminio/architecture-demo-bucket;
+      echo 'Access key successfully created';
+      exit 0;
+      "        
+
+volumes:
+  minio-storage: {}
+  
+networks:
+  postgres:
+    driver: bridge

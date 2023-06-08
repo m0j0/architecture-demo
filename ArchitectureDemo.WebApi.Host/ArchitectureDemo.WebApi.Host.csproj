@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.53.0" />
+    <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ArchitectureDemo.BL\ArchitectureDemo.BL.csproj" />
+    <ProjectReference Include="..\ArchitectureDemo.DAL\ArchitectureDemo.DAL.csproj" />
+    <ProjectReference Include="..\ArchitectureDemo.S3\ArchitectureDemo.S3.csproj" />
+    <ProjectReference Include="..\ArchitectureDemo\ArchitectureDemo.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="gRPC\Protos\*.proto" />
+  </ItemGroup>
+
+</Project>

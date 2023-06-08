@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option csharp_namespace = "ArchitectureDemo.gRPC.Services";
+
+package users;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+
+service Users {
+  rpc GetById(GetByIdRequest) returns (GetByIdResponse);
+  rpc GetAll(GetAllFilter) returns (GetAllResponse);
+  rpc GetTree(google.protobuf.Empty) returns (GetTreeResponse);
+  rpc Create(CreateRequest) returns (CreateResponse);
+}
+
+message GetByIdRequest {
+  int32 id = 1;
+}
+
+message GetByIdResponse {
+  User user = 1;
+}
+
+message GetAllFilter {
+  google.protobuf.StringValue name = 1;
+  optional google.protobuf.Timestamp created_after = 2;
+}
+
+message GetAllResponse {
+  repeated User users = 1;
+}
+
+message GetTreeResponse {
+  repeated UserWithChildren users = 1;
+}
+
+message CreateRequest {
+  string name = 1;
+  string email = 2;
+  google.protobuf.Int32Value parent_id = 3;
+}
+
+message CreateResponse {
+  message EmailAlreadyRegistered {}
+  message ParentNotFound {}
+
+  oneof result {
+    int32 user_id = 1;
+    EmailAlreadyRegistered email_already_registered = 2;
+    ParentNotFound parent_not_found = 3;
+  }
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  int32 files_count = 3;
+  google.protobuf.Int32Value parent_id = 4;
+  google.protobuf.StringValue parent_name = 5;
+}
+
+message UserWithChildren {
+  int32 id = 1;
+  string name = 2;
+  repeated UserWithChildren children = 3;
+}
