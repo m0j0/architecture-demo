@@ -14,10 +14,13 @@ internal class LockService : ILockService
     {
         _optionsMonitor = optionsMonitor;
     }
-    public async Task<LockResult> Acquire(int key1, int key2, CancellationToken cancellationToken)
+    public async Task<LockResult> Acquire(int key1, int key2,
+        CancellationToken cancellationToken)
     {
         var connectionString = _optionsMonitor.CurrentValue.DemoDb;
-        var @lock = new PostgresDistributedLock(new PostgresAdvisoryLockKey(key1, key2), connectionString);
+        var @lock = new PostgresDistributedLock(
+            new PostgresAdvisoryLockKey(key1, key2),
+            connectionString);
 
         var handle = await @lock.TryAcquireAsync(cancellationToken: cancellationToken);
         if (handle == null)

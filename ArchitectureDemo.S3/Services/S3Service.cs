@@ -16,7 +16,8 @@ internal class S3Service : IS3Service
         _amazonS3 = amazonS3;
     }
 
-    public async Task<Stream> GetFile(string fileName, CancellationToken cancellationToken)
+    public async Task<Stream> GetFile(string fileName,
+        CancellationToken cancellationToken)
     {
         var getObjectResponse = await _amazonS3.GetObjectAsync(
             new GetObjectRequest
@@ -33,7 +34,8 @@ internal class S3Service : IS3Service
         return getObjectResponse.ResponseStream;
     }
 
-    public async Task UploadFile(Stream file, string fileName, CancellationToken cancellationToken)
+    public async Task UploadFile(Stream file, string fileName,
+        CancellationToken cancellationToken)
     {
         var putObjectResponse = await _amazonS3.PutObjectAsync(new PutObjectRequest
         {

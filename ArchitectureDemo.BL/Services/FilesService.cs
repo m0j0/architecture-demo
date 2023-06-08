@@ -21,7 +21,8 @@ internal class FilesService : IFilesService
         _lockService = lockService;
     }
 
-    public async Task<GetFileResult> GetFile(UserId userId, FileId fileId, CancellationToken cancellationToken)
+    public async Task<GetFileResult> GetFile(UserId userId, FileId fileId,
+        CancellationToken cancellationToken)
     {
         if (!await _usersRepository.DoesUserExist(userId, cancellationToken))
         {
@@ -34,10 +35,12 @@ internal class FilesService : IFilesService
             return new GetFileResult.FileNotFound();
         }
 
-        return new GetFileResult.FileStream(await _s3Service.GetFile(fileName, cancellationToken));
+        return new GetFileResult.FileStream(
+            await _s3Service.GetFile(fileName, cancellationToken));
     }
 
-    public async Task<UploadFileResult> UploadFile(UserId userId, Stream file, string fileName, CancellationToken cancellationToken)
+    public async Task<UploadFileResult> UploadFile(
+        UserId userId, Stream file, string fileName, CancellationToken cancellationToken)
     {
         if (!await _usersRepository.DoesUserExist(userId, cancellationToken))
         {

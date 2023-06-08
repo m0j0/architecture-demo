@@ -84,7 +84,8 @@ internal class UsersService : IUsersService
             .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<IReadOnlyList<UserWithChildrenModel>> GetUserTree(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<UserWithChildrenModel>> GetUserTree(
+        CancellationToken cancellationToken)
     {
         const string sql = @"select id as Id, name as Name, parent_id as ParentId from users";
 
@@ -107,7 +108,8 @@ internal class UsersService : IUsersService
         {
             foreach (var user in allUsers.Where(u => u.ParentId.HasValue && u.ParentId.Value == parent.Id))
             {
-                yield return new UserWithChildrenModel(new UserId(user.Id), user.Name, GetTree(allUsers, user).ToArray());
+                yield return new UserWithChildrenModel(
+                    new UserId(user.Id), user.Name, GetTree(allUsers, user).ToArray());
             }
         }
     }

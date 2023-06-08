@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using ArchitectureDemo.BL;
 using ArchitectureDemo.DAL;
 using ArchitectureDemo.S3;
